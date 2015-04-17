@@ -21,6 +21,53 @@
             </objects>
             <point key="canvasLocation" x="-559" y="-1905"/>
         </scene>
+        <!--Root View Controller-->
+        <scene sceneID="e6P-8S-Hqi">
+            <objects>
+                <tableViewController id="FnT-df-W4c" customClass="ReadSectionTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="fwZ-2U-d8k">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ReadSectionCell" id="hdA-uQ-PgC">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hdA-uQ-PgC" id="Cwc-vx-dMt">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="zBd-xj-eOL" kind="show" id="ae3-vJ-qPR"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="FnT-df-W4c" id="iT1-CM-J37"/>
+                            <outlet property="delegate" destination="FnT-df-W4c" id="WOG-h1-hP3"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="ADH-nV-OL6"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sCq-ot-lEt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2904" y="-2779"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="zA7-tc-qWW">
+            <objects>
+                <navigationController id="Ue9-cS-Vvf" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Q1E-wF-19U">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="FnT-df-W4c" kind="relationship" relationship="rootViewController" id="yjA-31-tTU"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mUh-my-axk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2013" y="-2775"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="Pfg-df-clY">
             <objects>
@@ -59,8 +106,8 @@
                                     <barButtonItem title="Item" id="5Vc-sG-XUk"/>
                                 </items>
                             </toolbar>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kJi-pf-q4a">
-                                <rect key="frame" x="0.0" y="64" width="600" height="492"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kJi-pf-q4a">
+                                <rect key="frame" x="8" y="64" width="584" height="492"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <attributedString key="attributedText"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -73,12 +120,12 @@
                             <constraint firstItem="pZV-8F-pDk" firstAttribute="top" secondItem="Xgh-JP-omt" secondAttribute="bottom" id="8Fv-ib-VkW"/>
                             <constraint firstItem="pZV-8F-pDk" firstAttribute="top" secondItem="kJi-pf-q4a" secondAttribute="bottom" constant="44" id="P4J-f3-121"/>
                             <constraint firstItem="Xgh-JP-omt" firstAttribute="top" secondItem="w4Y-UI-RRv" secondAttribute="bottom" constant="492" id="QQC-Mn-j9g"/>
-                            <constraint firstItem="kJi-pf-q4a" firstAttribute="leading" secondItem="2zT-Qf-ict" secondAttribute="leadingMargin" constant="-16" id="YX0-4z-TUv"/>
+                            <constraint firstItem="kJi-pf-q4a" firstAttribute="leading" secondItem="2zT-Qf-ict" secondAttribute="leadingMargin" constant="-8" id="YX0-4z-TUv"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Xgh-JP-omt" secondAttribute="trailing" constant="-16" id="Zqr-vq-Ak3"/>
                             <constraint firstItem="kJi-pf-q4a" firstAttribute="top" secondItem="w4Y-UI-RRv" secondAttribute="bottom" id="t8e-Xu-bZL"/>
                             <constraint firstItem="pZV-8F-pDk" firstAttribute="top" secondItem="Xgh-JP-omt" secondAttribute="bottom" id="uTN-PF-sId"/>
                             <constraint firstItem="Xgh-JP-omt" firstAttribute="leading" secondItem="2zT-Qf-ict" secondAttribute="leadingMargin" constant="-16" id="wHs-E0-BOG"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="kJi-pf-q4a" secondAttribute="trailing" constant="-16" id="y2c-jc-iN3"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="kJi-pf-q4a" secondAttribute="trailing" constant="-8" id="y2c-jc-iN3"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -93,7 +140,68 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5hV-Ch-gPw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3187" y="-1905"/>
+            <point key="canvasLocation" x="3804" y="-1905"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="RiQ-KO-dPn">
+            <objects>
+                <navigationController id="92a-MS-2hI" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="eh7-JS-K6g">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="bwt-LK-fZG" kind="relationship" relationship="rootViewController" id="g7o-Vd-Jg8"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="whA-LJ-6zx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="505" y="-2779"/>
+        </scene>
+        <!--Pick a Section-->
+        <scene sceneID="2D6-xj-FSq">
+            <objects>
+                <tableViewController id="bwt-LK-fZG" customClass="PickSectionTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Thw-l2-61F">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PickSectionCell" textLabel="BCP-Vc-8Jm" style="IBUITableViewCellStyleDefault" id="C3y-iz-Hcn">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="C3y-iz-Hcn" id="Q4v-u9-eMb">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BCP-Vc-8Jm">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="Ue9-cS-Vvf" kind="show" id="zbS-yw-2RC"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="bwt-LK-fZG" id="Koq-0H-yMP"/>
+                            <outlet property="delegate" destination="bwt-LK-fZG" id="2lW-sL-DH0"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Pick a Section" id="Hr2-Hf-VuH">
+                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="w1V-sg-OCe">
+                            <connections>
+                                <action selector="shouldHideViewController:" destination="bwt-LK-fZG" id="2Lx-6a-04C"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="acz-ZC-v5w" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1235" y="-2779"/>
         </scene>
         <!--The Student Life-->
         <scene sceneID="kN7-lq-Ue3">
@@ -145,7 +253,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="The Student Life" id="acF-4y-Jxq">
-                        <barButtonItem key="leftBarButtonItem" title="MENU" id="3Gn-Al-bHa"/>
+                        <barButtonItem key="leftBarButtonItem" title="MENU" id="3Gn-Al-bHa">
+                            <connections>
+                                <segue destination="92a-MS-2hI" kind="presentation" id="fyk-na-YNC"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="D7D-4q-NRr"/>
                     </navigationItem>
                     <connections>
@@ -158,6 +270,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="KYm-lA-UTs"/>
+        <segue reference="ae3-vJ-qPR"/>
     </inferredMetricsTieBreakers>
 </document>

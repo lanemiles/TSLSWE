@@ -1,34 +1,40 @@
 //
-//  FeaturedArticlesTVC.m
+//  SectionTVC.m
 //  TSLSWE
 //
-//  Created by Lane Miles on 4/15/15.
+//  Created by Lane Miles on 4/16/15.
 //  Copyright (c) 2015 Lane Miles. All rights reserved.
 //
 
-#import "FeaturedArticlesTVC.h"
+#import "ReadSectionTVC.h"
 #import "ReadArticleVC.h"
 
-@interface FeaturedArticlesTVC () <UITableViewDelegate, UITableViewDataSource>
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@interface ReadSectionTVC ()
+
 @property (strong, nonatomic) NSArray *data;
+
 @end
 
-@implementation FeaturedArticlesTVC
+@implementation ReadSectionTVC
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    NSArray *array = [[NSArray alloc] init];
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+      [self getData];
+ 
+}
 
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
     // Do any additional setup after loading the view.
-    [self getData];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    NSArray *array = [[NSArray alloc] init];
-    // Copying the array you just created to your data array for use in your table.
-    self.data = array;
- 
+  
 }
 
 - (void)didReceiveMemoryWarning {
@@ -39,8 +45,15 @@
 - (void) getData {
     dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
     dispatch_async(concurrentQueue, ^{
-        
-        NSURL *url = [NSURL URLWithString:@"http://tslswe.pythonanywhere.com/featured"];
+        NSURL *url;
+        if ([_sectionName isEqualToString:@"Top Stories"]) {
+            url = [NSURL URLWithString:@"http://tslswe.pythonanywhere.com/featured"];
+        } else {
+            NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/sections/%@", _sectionName];
+            urlStr = [urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            url = [NSURL URLWithString:urlStr];
+        }
+
         NSError *err;
         NSString *htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
         NSData *jsonData = [htmlString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
@@ -57,7 +70,7 @@
             NSLog(@"%@", error);
             
             if (error == nil) {
-
+                
             }
             
         }
@@ -65,12 +78,12 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
-
-  
+        
+        
     });
 }
 
-#pragma mark Table View Data Source Methods
+#pragma mark - Table view data source
 
 // This will tell your UITableView how many rows you wish to have in each section.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -79,7 +92,7 @@
 
 // This will tell your UITableView what data to put in which cells in your table.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifer = @"CellIdentifier";
+    static NSString *CellIdentifer = @"ReadSectionCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifer];
     
     // Using a cell identifier will allow your app to reuse cells as they come and go from the screen.
@@ -100,9 +113,6 @@
 }
 
 
-
-#pragma mark - Navigation
-
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
@@ -118,6 +128,5 @@
     
     
 }
-
 
 @end
