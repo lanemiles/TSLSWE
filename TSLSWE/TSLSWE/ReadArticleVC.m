@@ -16,9 +16,23 @@
 @property (strong, nonatomic) NSString *authorNames;
 @property (strong, nonatomic) NSString *articleBody;
 @property (strong, nonatomic) NSString *articleDate;
+@property (strong, nonatomic) NSString *articleURL;
+
+@property (strong, nonatomic) UIActivityViewController *activityViewController;
+
 @end
 
 @implementation ReadArticleVC
+- (IBAction)didPressShare:(UIBarButtonItem *)sender {
+    
+    NSString *str = @"I just read this great article in the TSL and thought you might like it too! \n";
+    NSURL *url = [NSURL URLWithString:_articleURL];
+    
+    
+    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[str, url] applicationActivities:nil];
+    
+    [self presentViewController:self.activityViewController animated:YES completion:nil];
+}
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
@@ -30,6 +44,9 @@
     // Do any additional setup after loading the view.
         [self getArticleDataWithIDNumber: _articleId];
         NSLog(@"%@", _articleId);
+    long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
+    NSLog(@"%ld", offset);
+  
 }
 
 - (void)didReceiveMemoryWarning {
@@ -74,6 +91,7 @@
                 _authorNames = by;
                 _articleDate = [temp valueForKey:@"pub_date"];
                 _articleBody = [temp valueForKey:@"article_body"];
+                _articleURL = [temp valueForKey:@"url"];
                 
                 NSLog(@"%@", error);
                 
@@ -93,6 +111,11 @@
 
 
 - (void) setText {
+    
+    long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
+    NSLog(@"%ld", offset);
+    
+ 
     NSString *text = [NSString stringWithFormat:@"%@ \n \n%@ \n%@ \n%@ \n \n%@",
                       _articleTitle, [_sectionName uppercaseString], _articleDate, _authorNames, _articleBody];
     
@@ -104,32 +127,32 @@
     [[NSMutableAttributedString alloc] initWithString:text];
     
     // Article Title attributes
-    UIFont *titleFont = [UIFont fontWithName:@"Georgia-Bold" size:20];
+    UIFont *titleFont = [UIFont fontWithName:@"Georgia-Bold" size:(22 + offset)];
     NSRange articleTitleRange = [text rangeOfString:_articleTitle];
     [attributedText setAttributes:@{NSFontAttributeName: titleFont}
                             range:articleTitleRange];
     
     // Section text attributes
-    UIFont *sectionFont = [UIFont fontWithName:@"Georgia" size:14];
+    UIFont *sectionFont = [UIFont fontWithName:@"Georgia" size:(16 + offset)];
     NSRange sectionRange = [text rangeOfString:[_sectionName uppercaseString]];
     [attributedText setAttributes:@{NSFontAttributeName: sectionFont}
                             range:sectionRange];
     
     // Date text attributes
-    UIFont *dateFont = [UIFont fontWithName:@"Georgia" size:14];
+    UIFont *dateFont = [UIFont fontWithName:@"Georgia" size:(16 + offset)];
     NSRange dateRange = [text rangeOfString:_articleDate];
     [attributedText setAttributes:@{NSFontAttributeName: dateFont}
                             range:dateRange];
     
     
     // Authors text attributes
-    UIFont *authorFont = [UIFont fontWithName:@"Georgia" size:14];
+    UIFont *authorFont = [UIFont fontWithName:@"Georgia" size:(16 + offset)];
     NSRange authorRange = [text rangeOfString:_authorNames];
     [attributedText setAttributes:@{NSFontAttributeName: authorFont}
                             range:authorRange];
     
     // Article body text attributes
-    UIFont *bodyFont = [UIFont fontWithName:@"Georgia" size:14];
+    UIFont *bodyFont = [UIFont fontWithName:@"Georgia" size:(16 + offset)];
     NSRange bodyRange = [text rangeOfString:_articleBody];
     [attributedText setAttributes:@{NSFontAttributeName: bodyFont}
                             range:bodyRange];
@@ -137,6 +160,21 @@
     
     self.textView.attributedText = attributedText;
 
+}
+- (IBAction)fontSizeIncrease:(UIBarButtonItem *)sender {
+    long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
+    offset = offset + 1;
+    [[NSUserDefaults standardUserDefaults] setInteger:offset forKey:@"FontSize"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self setText];
+}
+- (IBAction)fontSizeDecrease:(UIBarButtonItem *)sender {
+    long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
+    offset = offset - 1;
+    [[NSUserDefaults standardUserDefaults] setInteger:offset forKey:@"FontSize"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self setText];
 }
 
 
