@@ -8,8 +8,9 @@
 
 #import "TwitterVC.h"
 
-@interface TwitterVC ()
+@interface TwitterVC () <UIWebViewDelegate>
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
+@property (strong, nonatomic) UIActivityIndicatorView *spinner;
 
 @end
 
@@ -21,6 +22,22 @@
     NSURL *url = [NSURL URLWithString:@"https://twitter.com/tslnews"];
     NSURLRequest *requestObj = [NSURLRequest requestWithURL:url];
     [_webView loadRequest:requestObj];
+    _spinner = [[UIActivityIndicatorView alloc]
+                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    _spinner.backgroundColor = [UIColor whiteColor];
+    _spinner.color = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+   
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:YES];
+    _spinner.center=self.view.center;
+    [_spinner startAnimating];
+    [self.view addSubview:_spinner];
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [_spinner stopAnimating];
 }
 
 - (void)didReceiveMemoryWarning {

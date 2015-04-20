@@ -10,6 +10,7 @@
 #import "ReadSectionTVC.h"
 #import "SectionCell.h"
 #import "TwitterVC.h"
+#import "ReadOtherVC.h"
 
 @interface PickSectionTVC ()
 
@@ -24,7 +25,7 @@
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
-    _data = [[NSArray alloc] initWithObjects:@"Top Stories", @"News", @"Sports", @"Life & Style", @"Opinions", @"Features", @"Twitter",nil];
+    _data = [[NSArray alloc] initWithObjects:@"Top Stories", @"News", @"Sports", @"Life & Style", @"Opinions", @"Features", @"Twitter", @"About", @"Contact",nil];
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -88,10 +89,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row != 6) {
+    if (indexPath.row < 6) {
         [self performSegueWithIdentifier:@"ShowSection" sender:indexPath];
-    } else {
+    } else if (indexPath.row == 6){
         [self performSegueWithIdentifier:@"TWITTER" sender:indexPath];
+    } else if (indexPath.row > 6){
+        [self performSegueWithIdentifier:@"ReadOther" sender:indexPath];
     }
 }
 
@@ -105,7 +108,7 @@
         NSIndexPath *path = (NSIndexPath*) sender;
         NSString *sectionName = _data[path.row];
         NSLog(@"%ld", (long)path.row);
-        if (path.row != 6) {
+        if (path.row < 6) {
             UINavigationController *nav = segue.destinationViewController;
             
             if ([nav.topViewController isKindOfClass:[ReadSectionTVC class]]) {
@@ -113,8 +116,12 @@
                 vc.sectionName = sectionName;
                 vc.title = sectionName;
             }
-        } else {
-            
+        } else if (path.row  == 7) {
+            ReadOtherVC *vc = (ReadOtherVC*)segue.destinationViewController;
+            vc.otherName = @"About";
+        } else if (path.row == 8) {
+            ReadOtherVC *vc = (ReadOtherVC*)segue.destinationViewController;
+            vc.otherName = @"Contact";
         }
         
         

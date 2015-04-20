@@ -20,6 +20,9 @@
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kbN-kx-C1M">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="delegate" destination="QqE-p2-25X" id="umO-6C-OWB"/>
+                                </connections>
                             </webView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -44,6 +47,73 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F6u-ac-MBw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1400" y="-3451"/>
+        </scene>
+        <!--Read OtherVC-->
+        <scene sceneID="hZh-x2-Nfc">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="hfi-XC-zCx" customClass="ReadOtherVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="g1V-L5-3wF"/>
+                        <viewControllerLayoutGuide type="bottom" id="iKE-xM-Yh6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6fA-xN-kCl">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r28-fi-4HK">
+                                <rect key="frame" x="8" y="64" width="584" height="492"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <attributedString key="attributedText"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rSJ-Eb-y91">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem image="downarrow" id="Ff7-ki-LaQ">
+                                        <color key="tintColor" red="0.054901960780000002" green="0.47843137250000001" blue="0.73333333329999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <action selector="fontSizeDecrease:" destination="hfi-XC-zCx" id="8oH-AZ-tip"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="O7o-ov-nVo"/>
+                                    <barButtonItem image="uparrow" id="JCa-Gf-7QE">
+                                        <color key="tintColor" red="0.054901960780000002" green="0.47843137250000001" blue="0.73333333329999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <action selector="fontSizeIncrease:" destination="hfi-XC-zCx" id="Xmc-L5-qQJ"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="ukK-ID-Q34"/>
+                                    <barButtonItem systemItem="play" id="xrV-9c-ovp">
+                                        <color key="tintColor" red="0.054901960780000002" green="0.47843137250000001" blue="0.73333333329999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <action selector="speakText:" destination="hfi-XC-zCx" id="swx-8h-ixz"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="r28-fi-4HK" firstAttribute="top" secondItem="g1V-L5-3wF" secondAttribute="bottom" id="CyG-8m-UQ6"/>
+                            <constraint firstItem="iKE-xM-Yh6" firstAttribute="top" secondItem="r28-fi-4HK" secondAttribute="bottom" constant="44" id="N3v-8i-6gp"/>
+                            <constraint firstItem="r28-fi-4HK" firstAttribute="top" secondItem="g1V-L5-3wF" secondAttribute="bottom" id="OFq-50-7nx"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="r28-fi-4HK" secondAttribute="trailing" constant="-8" id="Oer-Ga-V7o"/>
+                            <constraint firstItem="rSJ-Eb-y91" firstAttribute="leading" secondItem="6fA-xN-kCl" secondAttribute="leadingMargin" constant="-16" id="TLO-vJ-5Oc"/>
+                            <constraint firstItem="r28-fi-4HK" firstAttribute="top" secondItem="g1V-L5-3wF" secondAttribute="bottom" id="V9O-9V-2D8"/>
+                            <constraint firstItem="r28-fi-4HK" firstAttribute="leading" secondItem="6fA-xN-kCl" secondAttribute="leadingMargin" constant="-8" id="dKd-Ep-f1n"/>
+                            <constraint firstItem="iKE-xM-Yh6" firstAttribute="top" secondItem="rSJ-Eb-y91" secondAttribute="bottom" id="j5x-lp-AxR"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="rSJ-Eb-y91" secondAttribute="trailing" constant="-16" id="mNL-Y2-Qu1"/>
+                            <constraint firstItem="rSJ-Eb-y91" firstAttribute="top" secondItem="r28-fi-4HK" secondAttribute="bottom" id="pxy-cW-fVW"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="textView" destination="r28-fi-4HK" id="CZu-YS-9qK"/>
+                        <outlet property="toolbar" destination="rSJ-Eb-y91" id="YPp-Z0-wTw"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ywn-fH-c79" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2058" y="-3423"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="e6P-8S-Hqi">
@@ -310,11 +380,12 @@
                     <connections>
                         <segue destination="Ue9-cS-Vvf" kind="show" identifier="ShowSection" id="12w-gX-n6L"/>
                         <segue destination="QqE-p2-25X" kind="show" identifier="TWITTER" id="bp3-Sh-T8k"/>
+                        <segue destination="hfi-XC-zCx" kind="show" identifier="ReadOther" id="HPx-D7-KlA"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="acz-ZC-v5w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1211" y="-2787"/>
+            <point key="canvasLocation" x="1331" y="-2743"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="WG5-xO-a20">
