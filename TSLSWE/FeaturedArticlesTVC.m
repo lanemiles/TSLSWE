@@ -8,10 +8,12 @@
 
 #import "FeaturedArticlesTVC.h"
 #import "ReadArticleVC.h"
+#import "ArticleInfoCell.h"
 
 @interface FeaturedArticlesTVC () <UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *data;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
 @end
 
 @implementation FeaturedArticlesTVC
@@ -20,6 +22,12 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
     // Do any additional setup after loading the view.
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Top Stories"
+                                                                 style:UIBarButtonItemStylePlain
+                                                                target:nil
+                                                                action:nil];
+    
+    [self.navigationItem setBackBarButtonItem:backItem];
     [self getData];
 }
 
@@ -28,6 +36,10 @@
     NSArray *array = [[NSArray alloc] init];
     // Copying the array you just created to your data array for use in your table.
     self.data = array;
+    self.tableView.estimatedRowHeight = 150.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+
+    
  
 }
 
@@ -80,11 +92,12 @@
 // This will tell your UITableView what data to put in which cells in your table.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifer = @"CellIdentifier";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifer];
+    
+    ArticleInfoCell *cell = (ArticleInfoCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifer];
     
     // Using a cell identifier will allow your app to reuse cells as they come and go from the screen.
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifer];
+        cell = (ArticleInfoCell*)[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifer];
     }
     
     // Deciding which data to put into this particular cell.
@@ -94,7 +107,28 @@
     NSDictionary *fieldData = [_data[row] valueForKey:@"fields"];
     NSString *title = [fieldData valueForKey:@"headline"];
     
-    cell.textLabel.text = title;
+    NSString *section = [fieldData valueForKey:@"section"];
+    
+    NSArray *authors = [fieldData valueForKey:@"authors"];
+
+    NSString *by = @"";
+    for (int i = 0; i < authors.count; i++) {
+        if (i != authors.count - 1) {
+            by = [by stringByAppendingString:[NSString stringWithFormat:@"%@ and ", authors[i]]];
+        } else {
+            by = [by stringByAppendingString:[NSString stringWithFormat:@"%@", authors[i]]];
+        }
+    }
+
+    NSString *author = by;
+    
+    NSString *date = [fieldData valueForKey:@"pub_date"];
+    
+    NSString *byLine = [NSString stringWithFormat:@"%@ | %@ | %@", section, author, date];
+    
+    cell.articleTitle.text = title;
+    cell.byLine.text = byLine;
+
     
     return cell;
 }

@@ -8,6 +8,7 @@
 
 #import "ReadSectionTVC.h"
 #import "ReadArticleVC.h"
+#import "ArticleInfoCell.h"
 
 @interface ReadSectionTVC ()
 
@@ -20,21 +21,46 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSArray *array = [[NSArray alloc] init];
+    NSArray *data = [[NSArray alloc] init];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-      [self getData];
+      //[self getData];
+    
+    self.tableView.estimatedRowHeight = 150.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
+    
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    //self.refreshControl.backgroundColor = [UIColor blueColor];
+    self.refreshControl.tintColor = [UIColor blueColor];
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Getting most recent articles"];
+    [self.refreshControl addTarget:self
+                            action:@selector(getData)
+                  forControlEvents:UIControlEventValueChanged];
+
+
  
 }
 
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
+    // kick off your async refresh!
+   
+    [self.refreshControl beginRefreshing];
+     [self getData];
     // Do any additional setup after loading the view.
   
+}
+
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView
+{
+    if( self.refreshControl.isRefreshing)
+        [self getData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,6 +103,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
+            [self.refreshControl endRefreshing];
         });
         
         
@@ -93,11 +120,12 @@
 // This will tell your UITableView what data to put in which cells in your table.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifer = @"ReadSectionCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifer];
+    
+    ArticleInfoCell *cell = (ArticleInfoCell*) [tableView dequeueReusableCellWithIdentifier:CellIdentifer];
     
     // Using a cell identifier will allow your app to reuse cells as they come and go from the screen.
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifer];
+        cell = (ArticleInfoCell*)[[ArticleInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifer];
     }
     
     // Deciding which data to put into this particular cell.
@@ -105,9 +133,29 @@
     NSUInteger row = [indexPath row];
     
     NSDictionary *fieldData = [_data[row] valueForKey:@"fields"];
+    
     NSString *title = [fieldData valueForKey:@"headline"];
     
-    cell.textLabel.text = title;
+    
+    NSArray *authors = [fieldData valueForKey:@"authors"];
+    
+    NSString *by = @"";
+    for (int i = 0; i < authors.count; i++) {
+        if (i != authors.count - 1) {
+            by = [by stringByAppendingString:[NSString stringWithFormat:@"%@ and ", authors[i]]];
+        } else {
+            by = [by stringByAppendingString:[NSString stringWithFormat:@"%@", authors[i]]];
+        }
+    }
+    
+    NSString *author = by;
+    
+    NSString *date = [fieldData valueForKey:@"pub_date"];
+    
+    NSString *byLine = [NSString stringWithFormat:@"%@ | %@", author, date];
+    
+    cell.articleTitle.text = title;
+    cell.byLine.text = byLine;
     
     return cell;
 }
@@ -118,7 +166,7 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     
-    UITableViewCell *cell = (UITableViewCell*)sender;
+    ArticleInfoCell *cell = (ArticleInfoCell*)sender;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     if ([[segue destinationViewController] isKindOfClass:[ReadArticleVC class]]) {
         NSString *articleId = [[_data[indexPath.row] valueForKey:@"fields"] valueForKey:@"id"];

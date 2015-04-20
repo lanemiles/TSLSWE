@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D09E0CE1AE4785A0023BB1B /* ArticleInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D09E0CD1AE4785A0023BB1B /* ArticleInfoCell.m */; };
 		1D1024051AE0D0B80025351A /* ReadSectionTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D1024041AE0D0B80025351A /* ReadSectionTVC.m */; };
 		1D1024081AE0D7620025351A /* PickSectionTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D1024071AE0D7620025351A /* PickSectionTVC.m */; };
 		1D727CC51ACDE2BF00703A14 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D727CC41ACDE2BF00703A14 /* main.m */; };
@@ -30,6 +31,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1D09E0CC1AE4785A0023BB1B /* ArticleInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleInfoCell.h; sourceTree = "<group>"; };
+		1D09E0CD1AE4785A0023BB1B /* ArticleInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleInfoCell.m; sourceTree = "<group>"; };
 		1D1024031AE0D0B80025351A /* ReadSectionTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadSectionTVC.h; sourceTree = "<group>"; };
 		1D1024041AE0D0B80025351A /* ReadSectionTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadSectionTVC.m; sourceTree = "<group>"; };
 		1D1024061AE0D7620025351A /* PickSectionTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickSectionTVC.h; sourceTree = "<group>"; };
@@ -93,6 +96,8 @@
 				1D727CC61ACDE2BF00703A14 /* AppDelegate.h */,
 				1D727CC71ACDE2BF00703A14 /* AppDelegate.m */,
 				1D727CCC1ACDE2BF00703A14 /* Main.storyboard */,
+				1D09E0CC1AE4785A0023BB1B /* ArticleInfoCell.h */,
+				1D09E0CD1AE4785A0023BB1B /* ArticleInfoCell.m */,
 				1D1024031AE0D0B80025351A /* ReadSectionTVC.h */,
 				1D1024041AE0D0B80025351A /* ReadSectionTVC.m */,
 				1D1024061AE0D7620025351A /* PickSectionTVC.h */,
@@ -235,6 +240,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D9AB78C1ADE58FE007DA2A2 /* FeaturedArticlesTVC.m in Sources */,
+				1D09E0CE1AE4785A0023BB1B /* ArticleInfoCell.m in Sources */,
 				1D727CC81ACDE2BF00703A14 /* AppDelegate.m in Sources */,
 				1D1024081AE0D7620025351A /* PickSectionTVC.m in Sources */,
 				1D727CC51ACDE2BF00703A14 /* main.m in Sources */,
