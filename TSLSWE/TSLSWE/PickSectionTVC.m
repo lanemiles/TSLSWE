@@ -8,6 +8,8 @@
 
 #import "PickSectionTVC.h"
 #import "ReadSectionTVC.h"
+#import "SectionCell.h"
+#import "TwitterVC.h"
 
 @interface PickSectionTVC ()
 
@@ -22,13 +24,18 @@
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
-    _data = [[NSArray alloc] initWithObjects:@"Top Stories", @"News", @"Sports", @"Life & Style", @"Opinions", @"Features", nil];
+    _data = [[NSArray alloc] initWithObjects:@"Top Stories", @"News", @"Sports", @"Life & Style", @"Opinions", @"Features", @"Twitter",nil];
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 - (IBAction)shouldHideViewController:(UIBarButtonItem *)sender {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (IBAction)didPressFavorites:(id)sender {
+    
+    
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated{
@@ -39,6 +46,18 @@
                                                                 action:nil];
     
     [self.navigationItem setBackBarButtonItem:backItem];
+    
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1]];
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIColor whiteColor],
+      NSForegroundColorAttributeName,
+      
+      [UIFont fontWithName:@"HelveticaNeue-CondensedBold" size:22.0],
+      NSFontAttributeName,
+      nil]];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,14 +74,26 @@
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PickSectionCell" forIndexPath:indexPath];
+- (SectionCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    SectionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PickSectionCell" forIndexPath:indexPath];
     
     // Configure the cell...
-    cell.textLabel.text = _data[indexPath.row];
+    cell.name.text = _data[indexPath.row];
+//    if ([_data[indexPath.row] isEqualToString:@"News"]) {
+//         cell.image = [UIImage imageNamed:@"News"];
+//    }
+    cell.image.image= [UIImage imageNamed:_data[indexPath.row]];
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row != 6) {
+        [self performSegueWithIdentifier:@"ShowSection" sender:indexPath];
+    } else {
+        [self performSegueWithIdentifier:@"TWITTER" sender:indexPath];
+    }
+}
 
 #pragma mark - Navigation
 
@@ -70,18 +101,41 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    
-    UITableViewCell *cell = (UITableViewCell*)sender;
-    NSString *sectionName = cell.textLabel.text;
-    
-    UINavigationController *nav = segue.destinationViewController;
-    
-    
-    if ([nav.topViewController isKindOfClass:[ReadSectionTVC class]]) {
-        ReadSectionTVC *vc = (ReadSectionTVC *)nav.topViewController;
-        vc.sectionName = sectionName;
-        vc.title = sectionName;
+    if ([sender isKindOfClass:[NSIndexPath class]]) {
+        NSIndexPath *path = (NSIndexPath*) sender;
+        NSString *sectionName = _data[path.row];
+        NSLog(@"%ld", (long)path.row);
+        if (path.row != 6) {
+            UINavigationController *nav = segue.destinationViewController;
+            
+            if ([nav.topViewController isKindOfClass:[ReadSectionTVC class]]) {
+                ReadSectionTVC *vc = (ReadSectionTVC *)nav.topViewController;
+                vc.sectionName = sectionName;
+                vc.title = sectionName;
+            }
+        } else {
+            
+        }
+        
+        
+        
     }
+    
+    
+    else {
+    
+     
+        NSString *sectionName = @"Favorites";
+        
+        UINavigationController *nav = segue.destinationViewController;
+        
+        if ([nav.topViewController isKindOfClass:[ReadSectionTVC class]]) {
+            ReadSectionTVC *vc = (ReadSectionTVC *)nav.topViewController;
+            vc.sectionName = sectionName;
+            vc.title = sectionName;
+        }
+    }
+    
     
 }
 

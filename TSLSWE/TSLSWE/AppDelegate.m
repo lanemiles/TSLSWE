@@ -17,6 +17,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    nanosleep((struct timespec[]){{0, 750000000}}, NULL);
     return YES;
 }
 

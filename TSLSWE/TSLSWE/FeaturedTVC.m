@@ -1,23 +1,23 @@
 //
-//  FeaturedArticlesTVC.m
+//  FeaturedTVC.m
 //  TSLSWE
 //
-//  Created by Lane Miles on 4/15/15.
+//  Created by Lane Miles on 4/20/15.
 //  Copyright (c) 2015 Lane Miles. All rights reserved.
 //
 
-#import "FeaturedArticlesTVC.h"
-#import "ReadArticleVC.h"
+#import "FeaturedTVC.h"
 #import "ArticleInfoCell.h"
+#import "ReadArticleVC.h"
 #import "ReadSectionTVC.h"
 
-@interface FeaturedArticlesTVC () <UITableViewDelegate, UITableViewDataSource>
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@interface FeaturedTVC ()
+
 @property (strong, nonatomic) NSArray *data;
-@property (strong, nonatomic) UIRefreshControl *refreshControl;
+
 @end
 
-@implementation FeaturedArticlesTVC
+@implementation FeaturedTVC
 
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -28,10 +28,10 @@
                                                                 target:nil
                                                                 action:nil];
     
-
+    
     
     [self.navigationItem setBackBarButtonItem:backItem];
-    [self getData];
+ 
     
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1]];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
@@ -45,6 +45,21 @@
       nil]];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
+    
+    self.tableView.contentOffset = CGPointMake(0, -self.refreshControl.frame.size.height);
+    [self.refreshControl beginRefreshing];
+    [self getData];
+    
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+        NSArray *array = [[NSArray alloc] init];
+    self.data = array;
+    self.tableView.estimatedRowHeight = 150.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
     self.refreshControl = [[UIRefreshControl alloc] init];
     //self.refreshControl.backgroundColor = [UIColor blueColor];
     self.refreshControl.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
@@ -52,26 +67,19 @@
     [self.refreshControl addTarget:self
                             action:@selector(getData)
                   forControlEvents:UIControlEventValueChanged];
+    
 
     
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    NSArray *array = [[NSArray alloc] init];
-    // Copying the array you just created to your data array for use in your table.
-    self.data = array;
-    self.tableView.estimatedRowHeight = 150.0;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
-
-    
- 
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - Table view data source
 
 - (void) getData {
     dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
@@ -87,22 +95,24 @@
         if(jsonData != nil) {
             NSError *error = nil;
             NSArray *result = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
-
+            
             
             _data = result;
-
+            
             
             if (error == nil) {
-
+                
             }
             
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
 
-  
+            [self.tableView reloadData];
+            [self.refreshControl endRefreshing];
+        });
+        
+        
     });
 }
 
@@ -114,8 +124,8 @@
 }
 
 // This will tell your UITableView what data to put in which cells in your table.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifer = @"CellIdentifier";
+- (ArticleInfoCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifer = @"CellIdentifier1";
     
     ArticleInfoCell *cell = (ArticleInfoCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifer];
     
@@ -134,7 +144,7 @@
     NSString *section = [fieldData valueForKey:@"section"];
     
     NSArray *authors = [fieldData valueForKey:@"authors"];
-
+    
     NSString *by = @"";
     for (int i = 0; i < authors.count; i++) {
         if (i != authors.count - 1) {
@@ -143,7 +153,7 @@
             by = [by stringByAppendingString:[NSString stringWithFormat:@"%@", authors[i]]];
         }
     }
-
+    
     NSString *author = by;
     
     NSString *date = [fieldData valueForKey:@"pub_date"];
@@ -152,7 +162,7 @@
     
     cell.articleTitle.text = title;
     cell.byLine.text = byLine;
-
+    
     
     return cell;
 }
@@ -166,7 +176,7 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     
-    UITableViewCell *cell = (UITableViewCell*)sender;
+    ArticleInfoCell *cell = (ArticleInfoCell*)sender;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     if ([[segue destinationViewController] isKindOfClass:[ReadArticleVC class]]) {
         NSString *articleId = [[_data[indexPath.row] valueForKey:@"fields"] valueForKey:@"id"];
@@ -175,17 +185,16 @@
     }
     
     else if([[segue destinationViewController] isKindOfClass:[ReadSectionTVC class]]) {
-       
-            ReadSectionTVC *vc = (ReadSectionTVC *)segue.destinationViewController;
-            vc.sectionName = @"Favorites";
-            vc.title = @"Favorites";
-        }
+        
+        ReadSectionTVC *vc = (ReadSectionTVC *)segue.destinationViewController;
+        vc.sectionName = @"Favorites";
+        vc.title = @"Favorites";
+    }
     
     
-   
+    
     
     
 }
-
 
 @end

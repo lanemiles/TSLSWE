@@ -8,6 +8,7 @@
 
 #import "ReadArticleVC.h"
 #import "NSString+HTML1.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface ReadArticleVC ()
 @property (strong, nonatomic) IBOutlet UITextView *textView;
@@ -17,9 +18,12 @@
 @property (strong, nonatomic) NSString *articleBody;
 @property (strong, nonatomic) NSString *articleDate;
 @property (strong, nonatomic) NSString *articleURL;
+@property bool hasFavorited;
 
 @property (strong, nonatomic) UIActivityViewController *activityViewController;
+@property (strong, nonatomic) IBOutlet UIToolbar *toolbar;
 
+@property (strong, nonatomic) AVSpeechSynthesizer *speechSynthesizer;
 @end
 
 @implementation ReadArticleVC
@@ -33,21 +37,158 @@
     
     [self presentViewController:self.activityViewController animated:YES completion:nil];
 }
+- (IBAction)didFavoriteArticle:(id)sender {
+    
+    UIBarButtonItem *send = (UIBarButtonItem*) sender;
+    
+    if (_hasFavorited) {
+        
+        NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+        NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/removeFavorite/%@/%@", uuid, _articleId];
+        NSURL *url = [NSURL URLWithString:urlStr];
+        
+        
+        dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
+        dispatch_async(concurrentQueue, ^{
+            
+            NSError *err;
+            NSString *data = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
+                pause.style = UIBarButtonItemStylePlain;
+                pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+                NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+                
+                temp[0] = pause;
+                NSArray *good = [temp copy];
+                
+                
+                
+                [_toolbar setItems:good];
+                _hasFavorited = false;
+                
+            });
+            
+            
+        });
+        
+    } else {
+        
+        NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+        NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/addFavorite/%@/%@", uuid, _articleId];
+        NSURL *url = [NSURL URLWithString:urlStr];
+        
+        
+        dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
+        dispatch_async(concurrentQueue, ^{
+            
+            NSError *err;
+            NSString *data = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"starfilled"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
+                pause.style = UIBarButtonItemStylePlain;
+                pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+                NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+                
+                temp[0] = pause;
+                NSArray *good = [temp copy];
+                
+                
+                [_toolbar setItems:good];
+                
+            });
+            
+            
+        });
+        
+    }
+    
+   
+
+    
+}
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
+}
 
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:YES];
+    [_speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
         [self getArticleDataWithIDNumber: _articleId];
-        NSLog(@"%@", _articleId);
     long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
-    NSLog(@"%ld", offset);
-  
+
+    
+    
+    _speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
+
 }
+
+- (IBAction)speakText:(UIBarButtonItem *)sender {
+    NSString *string = _textView.text;
+    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:string];
+    utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
+    
+    utterance.rate = .20;
+
+    
+    if (!_speechSynthesizer.isPaused && !_speechSynthesizer.isSpeaking) {
+        [_speechSynthesizer speakUtterance:utterance];
+        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
+        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+        pause.style = UIBarButtonItemStylePlain;
+        
+        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+        [temp removeLastObject];
+        [temp addObject:pause];
+        NSArray *good = [temp copy];
+        [_toolbar setItems:good];
+    } else if (_speechSynthesizer.isPaused) {
+        [_speechSynthesizer continueSpeaking];
+        
+        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
+        pause.style = UIBarButtonItemStylePlain;
+        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+        
+        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+        [temp removeLastObject];
+        [temp addObject:pause];
+        NSArray *good = [temp copy];
+        
+        
+        [_toolbar setItems:good];
+    } else {
+        [_speechSynthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        
+        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(speakText:)];
+        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+        pause.style = UIBarButtonItemStylePlain;
+        
+        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+        [temp removeLastObject];
+        [temp addObject:pause];
+        NSArray *good = [temp copy];
+        
+        
+        [_toolbar setItems:good];
+    }
+    
+    
+
+    
+    
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -57,8 +198,8 @@
 - (void) getArticleDataWithIDNumber: (NSString*) articleId {
         dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
         dispatch_async(concurrentQueue, ^{
-            
-            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/articles/%@", articleId]];
+            NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/articles/%@/%@", uuid, articleId]];
             NSError *err;
             NSString *test = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
 
@@ -78,7 +219,6 @@
                 
                 
                 NSArray *authors = [temp valueForKey:@"authors"];
-                NSLog(@"%@", authors);
                 NSString *by = @"By ";
                 for (int i = 0; i < authors.count; i++) {
                     if (i != authors.count - 1) {
@@ -93,7 +233,14 @@
                 _articleBody = [temp valueForKey:@"article_body"];
                 _articleURL = [temp valueForKey:@"url"];
                 
-                NSLog(@"%@", error);
+                
+                NSString *favorited = [temp valueForKey:@"favorited"];
+                if ([favorited isEqualToString:@"false"]) {
+                    _hasFavorited = false;
+                } else {
+                    _hasFavorited = true;
+                }
+
                 
                 if (error == nil) {
                     
@@ -103,6 +250,18 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self setText];
+                if (_hasFavorited) {
+                    UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"starfilled"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
+                    pause.style = UIBarButtonItemStylePlain;
+                    pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+                    NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+                    
+                    temp[0] = pause;
+                    NSArray *good = [temp copy];
+                    
+                    
+                    [_toolbar setItems:good];
+                }
             });
             
             
@@ -113,10 +272,10 @@
 - (void) setText {
     
     long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
-    NSLog(@"%ld", offset);
+
     
  
-    NSString *text = [NSString stringWithFormat:@"%@ \n \n%@ \n%@ \n%@ \n \n%@",
+    NSString *text = [NSString stringWithFormat:@"%@\n\n%@\n%@\n%@\n\n%@",
                       _articleTitle, [_sectionName uppercaseString], _articleDate, _authorNames, _articleBody];
     
     // If attributed text is supported (iOS6+)
@@ -127,38 +286,40 @@
     [[NSMutableAttributedString alloc] initWithString:text];
     
     // Article Title attributes
-    UIFont *titleFont = [UIFont fontWithName:@"Georgia-Bold" size:(22 + offset)];
+    UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:(22 + offset)];
     NSRange articleTitleRange = [text rangeOfString:_articleTitle];
     [attributedText setAttributes:@{NSFontAttributeName: titleFont}
                             range:articleTitleRange];
     
     // Section text attributes
-    UIFont *sectionFont = [UIFont fontWithName:@"Georgia" size:(16 + offset)];
+    UIFont *sectionFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:(12 + offset)];
     NSRange sectionRange = [text rangeOfString:[_sectionName uppercaseString]];
     [attributedText setAttributes:@{NSFontAttributeName: sectionFont}
                             range:sectionRange];
     
     // Date text attributes
-    UIFont *dateFont = [UIFont fontWithName:@"Georgia" size:(16 + offset)];
+    UIFont *dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:(12 + offset)];
     NSRange dateRange = [text rangeOfString:_articleDate];
     [attributedText setAttributes:@{NSFontAttributeName: dateFont}
                             range:dateRange];
     
     
     // Authors text attributes
-    UIFont *authorFont = [UIFont fontWithName:@"Georgia" size:(16 + offset)];
+    UIFont *authorFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:(12 + offset)];
     NSRange authorRange = [text rangeOfString:_authorNames];
     [attributedText setAttributes:@{NSFontAttributeName: authorFont}
                             range:authorRange];
     
     // Article body text attributes
-    UIFont *bodyFont = [UIFont fontWithName:@"Georgia" size:(16 + offset)];
+    UIFont *bodyFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:(16 + offset)];
     NSRange bodyRange = [text rangeOfString:_articleBody];
     [attributedText setAttributes:@{NSFontAttributeName: bodyFont}
                             range:bodyRange];
     
     
     self.textView.attributedText = attributedText;
+    
+    
 
 }
 - (IBAction)fontSizeIncrease:(UIBarButtonItem *)sender {

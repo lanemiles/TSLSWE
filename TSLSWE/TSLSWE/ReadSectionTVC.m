@@ -35,7 +35,7 @@
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     //self.refreshControl.backgroundColor = [UIColor blueColor];
-    self.refreshControl.tintColor = [UIColor blueColor];
+    self.refreshControl.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Getting most recent articles"];
     [self.refreshControl addTarget:self
                             action:@selector(getData)
@@ -50,9 +50,46 @@
     [super viewWillAppear:YES];
     // kick off your async refresh!
    
+    self.tableView.contentOffset = CGPointMake(0, -self.refreshControl.frame.size.height);
     [self.refreshControl beginRefreshing];
      [self getData];
     // Do any additional setup after loading the view.
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1]];
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIColor whiteColor],
+      NSForegroundColorAttributeName,
+      
+      [UIFont fontWithName:@"HelveticaNeue-CondensedBold" size:22.0],
+      NSFontAttributeName,
+      nil]];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    
+    UIBarButtonItem *backItem;
+    
+    if ([_sectionName isEqualToString:@"Top Stories"]) {
+        backItem = [[UIBarButtonItem alloc] initWithTitle:@"Top"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:nil
+                                                                    action:nil];
+    } else if ([_sectionName isEqualToString:@"Life & Style"]) {
+        backItem = [[UIBarButtonItem alloc] initWithTitle:@"L&S"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:nil
+                                                                    action:nil];
+    } else {
+        backItem = [[UIBarButtonItem alloc] initWithTitle:_sectionName
+                                                    style:UIBarButtonItemStylePlain
+                                                   target:nil
+                                                   action:nil];
+    }
+    
+    
+    
+    
+    
+    [self.navigationItem setBackBarButtonItem:backItem];
   
 }
 
@@ -74,6 +111,15 @@
         NSURL *url;
         if ([_sectionName isEqualToString:@"Top Stories"]) {
             url = [NSURL URLWithString:@"http://tslswe.pythonanywhere.com/featured"];
+        } else if ([_sectionName isEqualToString:@"Favorites"]) {
+            
+           
+            
+            NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+             NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/users/%@", uuid];
+            
+            url = [NSURL URLWithString:urlStr];
+            
         } else {
             NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/sections/%@", _sectionName];
             urlStr = [urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -93,7 +139,7 @@
             _data = result;
             
             
-            NSLog(@"%@", error);
+
             
             if (error == nil) {
                 
