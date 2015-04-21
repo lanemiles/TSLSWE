@@ -13,6 +13,7 @@
 
 @interface FeaturedTVC ()
 
+//JSON data
 @property (strong, nonatomic) NSArray *data;
 
 @end

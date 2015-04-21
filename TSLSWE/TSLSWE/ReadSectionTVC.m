@@ -12,6 +12,7 @@
 
 @interface ReadSectionTVC ()
 
+//JSON data
 @property (strong, nonatomic) NSArray *data;
 
 @end

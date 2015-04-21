@@ -14,6 +14,7 @@
 
 @interface PickSectionTVC ()
 
+//section choices
 @property (strong, nonatomic) NSArray *data;
 
 @end

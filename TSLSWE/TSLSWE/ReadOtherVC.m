@@ -10,9 +10,17 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface ReadOtherVC ()
+
+//textview to display text
 @property (strong, nonatomic) IBOutlet UITextView *textView;
+
+//bottom toolbar
 @property (strong, nonatomic) IBOutlet UIToolbar *toolbar;
+
+//speech synth for reading
 @property (strong, nonatomic) AVSpeechSynthesizer *speechSynthesizer;
+
+//text for uitextview
 @property (strong, nonatomic) NSString *text;
 
 @end

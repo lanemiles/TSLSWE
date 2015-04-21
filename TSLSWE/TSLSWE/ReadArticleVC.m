@@ -37,6 +37,9 @@
 //spinner for loading
 @property (strong, nonatomic) UIActivityIndicatorView *spinner;
 
+//boolean for not spinning when coming back from UIActivityIndicator
+@property bool shouldNotSpin;
+
 @end
 
 @implementation ReadArticleVC
@@ -66,10 +69,18 @@
     
     [super viewWillAppear:YES];
     
-    //start the spinner
-    _spinner.center=self.view.center;
-    [self.view addSubview:_spinner];
-    [_spinner startAnimating];
+    //start the spinner if needed
+    if (!_shouldNotSpin) {
+        _spinner.center=self.view.center;
+        [self.view addSubview:_spinner];
+        [_spinner startAnimating];
+    }
+    
+    //else, we just came back from the UIActivityThing and should spin next time
+    else {
+        _shouldNotSpin = NO;
+    }
+    
     
     //start the async data grab
     [self getArticleDataWithIDNumber: _articleId];
@@ -102,6 +113,9 @@
     
     //create and show the share screen
     self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[str, url] applicationActivities:nil];
+    
+    _shouldNotSpin = YES;
+    
     [self presentViewController:self.activityViewController animated:YES completion:nil];
     
 }

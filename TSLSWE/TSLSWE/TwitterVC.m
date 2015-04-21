@@ -9,7 +9,11 @@
 #import "TwitterVC.h"
 
 @interface TwitterVC () <UIWebViewDelegate>
+
+//web view to show mobile Twitter
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
+
+//spinner while loading
 @property (strong, nonatomic) UIActivityIndicatorView *spinner;
 
 @end
