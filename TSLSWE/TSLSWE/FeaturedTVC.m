@@ -30,7 +30,7 @@
     self.data = array;
     
     //set up variable height table cells
-    self.tableView.estimatedRowHeight = 150.0;
+    self.tableView.estimatedRowHeight = 250.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
 
     //set up pull to refresh control
@@ -74,6 +74,12 @@
     [self.refreshControl beginRefreshing];
     [self getData];
     
+}
+
+//force a redisplay so that alll the text wraps
+- (void) viewDidAppear:(BOOL)animated {
+    //update table view
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {

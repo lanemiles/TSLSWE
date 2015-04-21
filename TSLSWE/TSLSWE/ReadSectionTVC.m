@@ -29,7 +29,7 @@
     _data = [[NSArray alloc] init];
     
     //set up variable height cells
-    self.tableView.estimatedRowHeight = 150.0;
+    self.tableView.estimatedRowHeight = 400.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
     //set up spinner
@@ -41,7 +41,6 @@
                   forControlEvents:UIControlEventValueChanged];
  
 }
-
 
 - (void) viewWillAppear:(BOOL)animated {
    
@@ -81,6 +80,12 @@
     
     [self.navigationItem setBackBarButtonItem:backItem];
   
+}
+
+//force a redisplay so that alll the text wraps
+- (void) viewDidAppear:(BOOL)animated {
+    //update table view
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -204,10 +209,9 @@
     
     UIFont *titleSize = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16+offset];
     cell.articleTitle.font = titleSize;
-    
+
     UIFont *bySize = [UIFont fontWithName:@"HelveticaNeue-Light" size:13+offset];
     cell.byLine.font = bySize;
-    
     
     return cell;
     
