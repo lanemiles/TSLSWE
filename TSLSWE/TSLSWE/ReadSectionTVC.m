@@ -34,7 +34,7 @@
     //set up spinner
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Getting most recent articles"];
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Getting most recent articles..."];
     [self.refreshControl addTarget:self
                             action:@selector(getData)
                   forControlEvents:UIControlEventValueChanged];

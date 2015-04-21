@@ -56,8 +56,11 @@
     //set up the speech synth
     _speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
     
+    //set up tap to hide controls
+    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleControls:)];
+    [self.view addGestureRecognizer:gesture];
+    
 }
-
 
 - (void) viewWillAppear:(BOOL)animated {
     
@@ -421,5 +424,30 @@
     //update text with new size
     [self setText];
 }
+
+
+#pragma mark - Toggle Showing/Hiding Controls
+- (void)toggleControls:(UITapGestureRecognizer *)gesture {
+    
+    //hide and show the navigation controls on the top
+    BOOL navHidden = self.navigationController.navigationBar.hidden;
+    [self.navigationController setNavigationBarHidden:!navHidden animated:YES];
+    
+    //hide and show the toolbar at the bottom
+    BOOL toolbarHidden = self.toolbar.hidden;
+    //if not hidden, hide the toolbar
+    if (!toolbarHidden) {
+        self.textView.frame =CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, self.textView.frame.size.height+44);
+        self.toolbar.hidden = YES;
+    }
+    
+    //if hidden, show the toolbar again
+    else {
+        self.textView.frame =CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, self.textView.frame.size.height);
+        self.toolbar.hidden = NO;
+    }
+    
+}
+
 
 @end
