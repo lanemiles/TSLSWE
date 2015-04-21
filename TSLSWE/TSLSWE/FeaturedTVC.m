@@ -16,6 +16,9 @@
 //JSON data
 @property (strong, nonatomic) NSArray *data;
 
+//we set this so we don't reload on coming back from an article
+@property bool shouldNotReload;
+
 @end
 
 @implementation FeaturedTVC
@@ -68,18 +71,19 @@
       nil]];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
-    
-    //start the spinner spinning and get the data
-    self.tableView.contentOffset = CGPointMake(0, -self.refreshControl.frame.size.height);
-    [self.refreshControl beginRefreshing];
-    [self getData];
+    if (!_shouldNotReload) {
+        //start the spinner spinning
+        self.tableView.contentOffset = CGPointMake(0, -self.refreshControl.frame.size.height);
+        [self.refreshControl beginRefreshing];
+    }
     
 }
 
-//force a redisplay so that alll the text wraps
 - (void) viewDidAppear:(BOOL)animated {
-    //update table view
-    [self.tableView reloadData];
+   
+    //we get the data here because we want a smoother transition
+    //with the pull to refresh even though this could be slower
+    [self getData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -120,6 +124,8 @@
         dispatch_async(dispatch_get_main_queue(), ^{
 
             //update the table view
+            //we do this twice, it makes the word wrap better
+            [self.tableView reloadData];
             [self.tableView reloadData];
             
             //stop the spinner
@@ -204,11 +210,13 @@
     
     //else, we might have hit the favorites button, so set that accordingly
     else if([[segue destinationViewController] isKindOfClass:[ReadSectionTVC class]]) {
-        
         ReadSectionTVC *vc = (ReadSectionTVC *)segue.destinationViewController;
         vc.sectionName = @"Favorites";
         vc.title = @"Favorites";
     }
+   
+    //we don't want to refresh this page every time it loads
+    _shouldNotReload = YES;
     
     //if we hit the menu button, we don't need to do any work here
 }

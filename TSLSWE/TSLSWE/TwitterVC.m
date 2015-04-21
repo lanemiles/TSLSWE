@@ -33,9 +33,10 @@
     [_webView loadRequest:requestObj];
     
     //create the spinner
+    //we use the clear background so if its too slow it's less bad
     _spinner = [[UIActivityIndicatorView alloc]
                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    _spinner.backgroundColor = [UIColor whiteColor];
+    _spinner.backgroundColor = [UIColor clearColor];
     _spinner.color = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
    
 }
@@ -51,7 +52,6 @@
     
 }
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -61,6 +61,11 @@
 #pragma mark - WebView Delegate Methods
 //when the website loads, stop the spinner
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [self performSelector:@selector(stopSpinning) withObject:nil afterDelay:.5];
+}
+
+//we use this so we can call after delay to make transition prettier
+- (void) stopSpinning {
     [_spinner stopAnimating];
 }
 

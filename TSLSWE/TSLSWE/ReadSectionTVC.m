@@ -15,6 +15,9 @@
 //JSON data
 @property (strong, nonatomic) NSArray *data;
 
+//we set this so we don't reload on coming back from an article
+@property bool shouldNotReload;
+
 @end
 
 @implementation ReadSectionTVC
@@ -45,14 +48,13 @@
 - (void) viewWillAppear:(BOOL)animated {
    
     [super viewWillAppear:YES];
-   
-    //start the spinner
-    self.tableView.contentOffset = CGPointMake(0, -self.refreshControl.frame.size.height);
-    [self.refreshControl beginRefreshing];
     
-    //start asynch refresh
-     [self getData];
- 
+    if (!_shouldNotReload ) {
+        //start the spinner
+        self.tableView.contentOffset = CGPointMake(0, -self.refreshControl.frame.size.height);
+        [self.refreshControl beginRefreshing];
+    }
+   
     //style navigation controller
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1]];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
@@ -74,6 +76,8 @@
         backItem = [[UIBarButtonItem alloc] initWithTitle:@"Top" style:UIBarButtonItemStylePlain target:nil action:nil];
     } else if ([_sectionName isEqualToString:@"Life & Style"]) {
         backItem = [[UIBarButtonItem alloc] initWithTitle:@"L&S" style:UIBarButtonItemStylePlain target:nil action:nil];
+    } else if ([_sectionName isEqualToString:@"Favorites"]) {
+        backItem = [[UIBarButtonItem alloc] initWithTitle:@"Fav" style:UIBarButtonItemStylePlain target:nil action:nil];
     } else {
         backItem = [[UIBarButtonItem alloc] initWithTitle:_sectionName style:UIBarButtonItemStylePlain target:nil action:nil];
     }
@@ -82,10 +86,12 @@
   
 }
 
-//force a redisplay so that alll the text wraps
 - (void) viewDidAppear:(BOOL)animated {
-    //update table view
-    [self.tableView reloadData];
+    
+    //we get the data here because we want a smoother transition
+    //with the pull to refresh even though this could be slower
+    [self getData];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -150,7 +156,9 @@
         //get main queue to do UI updating
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            //update table view
+            //update the table view
+            //we do this twice, it makes the word wrap better
+            [self.tableView reloadData];
             [self.tableView reloadData];
             
             //stop spinner
@@ -228,6 +236,7 @@
         NSString *articleId = [[_data[indexPath.row] valueForKey:@"fields"] valueForKey:@"id"];
         ReadArticleVC *vc = (ReadArticleVC*)[segue destinationViewController];
         vc.articleId = articleId;
+        _shouldNotReload = YES;
     }
     
     
