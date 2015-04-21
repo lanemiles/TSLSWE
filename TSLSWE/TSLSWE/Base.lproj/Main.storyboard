@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6724" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Ivd-qB-wNd">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Ivd-qB-wNd">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6711"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -27,16 +27,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerX" secondItem="kbN-kx-C1M" secondAttribute="centerX" id="1y8-j7-ZxK"/>
-                            <constraint firstItem="kbN-kx-C1M" firstAttribute="leading" secondItem="izC-Ex-rfs" secondAttribute="leadingMargin" id="IhF-1t-9jP"/>
-                            <constraint firstItem="kbN-kx-C1M" firstAttribute="top" secondItem="vuu-h6-M45" secondAttribute="bottom" id="N2Z-gD-xPu"/>
-                            <constraint firstItem="kbN-kx-C1M" firstAttribute="top" secondItem="vuu-h6-M45" secondAttribute="bottom" id="bQv-r1-z0e"/>
-                            <constraint firstItem="kbN-kx-C1M" firstAttribute="width" secondItem="izC-Ex-rfs" secondAttribute="width" id="efd-pL-A4N"/>
-                            <constraint firstAttribute="centerY" secondItem="kbN-kx-C1M" secondAttribute="centerY" constant="-32" id="fWM-7f-aCm"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="kbN-kx-C1M" secondAttribute="trailing" constant="-16" id="ffO-0H-pmX"/>
-                            <constraint firstItem="kbN-kx-C1M" firstAttribute="leading" secondItem="izC-Ex-rfs" secondAttribute="leadingMargin" constant="-16" id="iWg-4e-EOA"/>
-                            <constraint firstItem="kbN-kx-C1M" firstAttribute="top" secondItem="vuu-h6-M45" secondAttribute="bottom" id="pjk-qQ-lfV"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="kbN-kx-C1M" secondAttribute="trailing" id="u9r-tN-5wh"/>
+                            <constraint firstItem="kbN-kx-C1M" firstAttribute="leading" secondItem="izC-Ex-rfs" secondAttribute="leadingMargin" constant="-16" id="ECC-MD-TYq"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="kbN-kx-C1M" secondAttribute="trailing" constant="-16" id="UnK-WZ-XVY"/>
+                            <constraint firstItem="kbN-kx-C1M" firstAttribute="top" secondItem="vuu-h6-M45" secondAttribute="bottom" id="uSN-39-wZW"/>
+                            <constraint firstItem="Mlp-UU-mub" firstAttribute="top" secondItem="kbN-kx-C1M" secondAttribute="bottom" id="uxq-oo-5yX"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="TSL Twitter" id="7W7-QO-1Hb"/>
@@ -46,7 +40,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F6u-ac-MBw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1400" y="-3451"/>
+            <point key="canvasLocation" x="1928" y="-3923"/>
         </scene>
         <!--Read OtherVC-->
         <scene sceneID="hZh-x2-Nfc">
@@ -113,7 +107,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ywn-fH-c79" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2058" y="-3423"/>
+            <point key="canvasLocation" x="1920" y="-4727"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="e6P-8S-Hqi">
@@ -173,7 +167,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sCq-ot-lEt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2960" y="-2755"/>
+            <point key="canvasLocation" x="2832" y="-3139"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zA7-tc-qWW">
@@ -189,23 +183,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mUh-my-axk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2021" y="-2743"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="Pfg-df-clY">
-            <objects>
-                <navigationController id="9ff-Ri-F3l" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="fF8-1o-UiA">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="zBd-xj-eOL" kind="relationship" relationship="rootViewController" id="2fG-eS-UZ1"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xCL-KW-eOs" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2130" y="-1905"/>
+            <point key="canvasLocation" x="1920" y="-3139"/>
         </scene>
         <!--The Student Life-->
         <scene sceneID="Ok1-Pk-SN2">
@@ -292,7 +270,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5hV-Ch-gPw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3046" y="-1935"/>
+            <point key="canvasLocation" x="2832" y="-2051"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="RiQ-KO-dPn">
@@ -308,7 +286,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="whA-LJ-6zx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="505" y="-2779"/>
+            <point key="canvasLocation" x="-72" y="-3923"/>
         </scene>
         <!--Menu-->
         <scene sceneID="2D6-xj-FSq">
@@ -324,10 +302,10 @@
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="C3y-iz-Hcn" id="Q4v-u9-eMb">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NAX-wh-3l9">
-                                            <rect key="frame" x="88" y="24" width="513" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NAX-wh-3l9">
+                                            <rect key="frame" x="88" y="24" width="513" height="22"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="18"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZP5-gn-QsY">
@@ -372,25 +350,24 @@
                         <barButtonItem key="rightBarButtonItem" image="star" id="EvX-XZ-mbc">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <action selector="didPressFavorites:" destination="bwt-LK-fZG" id="yNi-G7-KcA"/>
                                 <segue destination="Ue9-cS-Vvf" kind="show" id="ngX-Nh-oPh"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <segue destination="Ue9-cS-Vvf" kind="show" identifier="ShowSection" id="12w-gX-n6L"/>
-                        <segue destination="QqE-p2-25X" kind="show" identifier="TWITTER" id="bp3-Sh-T8k"/>
-                        <segue destination="hfi-XC-zCx" kind="show" identifier="ReadOther" id="HPx-D7-KlA"/>
+                        <segue destination="QqE-p2-25X" kind="show" identifier="ShowTwitter" id="bp3-Sh-T8k"/>
+                        <segue destination="hfi-XC-zCx" kind="show" identifier="ShowOther" id="HPx-D7-KlA"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="acz-ZC-v5w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1331" y="-2743"/>
+            <point key="canvasLocation" x="735" y="-3923"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="WG5-xO-a20">
             <objects>
-                <navigationController id="Ivd-qB-wNd" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="InitialNav" id="Ivd-qB-wNd" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Jas-4k-y5s">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -401,7 +378,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vbM-2p-ToT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-691" y="-1795"/>
+            <point key="canvasLocation" x="-1083" y="-2803"/>
         </scene>
         <!--THE STUDENT LIFE-->
         <scene sceneID="I1O-0Q-1YZ">
@@ -472,7 +449,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="htS-Cd-x9s" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="152" y="-1786"/>
+            <point key="canvasLocation" x="-72" y="-2803"/>
         </scene>
     </scenes>
     <resources>
@@ -482,8 +459,8 @@
         <image name="uparrow" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="lSs-Xf-VSW"/>
-        <segue reference="OLN-Hc-xpI"/>
         <segue reference="ngX-Nh-oPh"/>
+        <segue reference="yjA-31-tTU"/>
+        <segue reference="OLN-Hc-xpI"/>
     </inferredMetricsTieBreakers>
 </document>

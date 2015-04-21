@@ -19,18 +19,22 @@
 
 @implementation ReadOtherVC
 
+#pragma mark - View Controller Life Cycle Methods
+
+
+//here we initalize our AVSpeechSynthesizer instance variable which is used to read the text outloud
+//we need to declare this as an ivar so we can stop it in viewWillDisappear so it doesn't read after we
+//leave the page
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
      _speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
 }
 
-- (void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:YES];
-    [_speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-}
-
+//because this page will either be showing the about or contact text, we just check the NSString set
+//in the segue
 - (void) viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:YES];
     
     if ([_otherName isEqualToString:@"About"]) {
@@ -41,9 +45,12 @@
         self.title = @"Contact";
     }
     
-    
-    
     [self setText];
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:YES];
+    [_speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -51,113 +58,121 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+#pragma mark - Setting Text Methods
 - (void) setText {
 
+    //get the user font size preference
     long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
    
+    //for attriubted string reasons
     NSString *text = _text;
-    
-    // If attributed text is supported (iOS6+)
-    
-    // Define general attributes for the entire text
-    
+
     NSMutableAttributedString *attributedText =
     [[NSMutableAttributedString alloc] initWithString:_text];
     
-    // Article Title attributes
+    //text attributes
     UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16+offset];
     NSRange textRange = [text rangeOfString:_text];
     [attributedText setAttributes:@{NSFontAttributeName: font}
                             range:textRange];
     
+    //set textview text
     _textView.attributedText = attributedText;
     
+    //scroll to top
     [self.textView scrollRangeToVisible:NSMakeRange(0,0)];
 
 }
 
+
+#pragma mark - Speaking Text Methods
 - (IBAction)speakText:(UIBarButtonItem *)sender {
+    
+    //set the text to speak to be the text view text
     NSString *string = _textView.text;
+    
+    //create utterance
     AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:string];
     utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
-    
     utterance.rate = .20;
     
+    //will need this to update the button
+    UIBarButtonItem *newButton;
     
+    //if we haven't started playing at all yet
     if (!_speechSynthesizer.isPaused && !_speechSynthesizer.isSpeaking) {
+        
+        //start reading
         [_speechSynthesizer speakUtterance:utterance];
-        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
-        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-        pause.style = UIBarButtonItemStylePlain;
         
-        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-        [temp removeLastObject];
-        [temp addObject:pause];
-        NSArray *good = [temp copy];
-        [_toolbar setItems:good];
-    } else if (_speechSynthesizer.isPaused) {
-        [_speechSynthesizer continueSpeaking];
+        //make the button a pause icon
+         newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
+        newButton.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+        newButton.style = UIBarButtonItemStylePlain;
         
-        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
-        pause.style = UIBarButtonItemStylePlain;
-        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-        
-        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-        [temp removeLastObject];
-        [temp addObject:pause];
-        NSArray *good = [temp copy];
-        
-        
-        [_toolbar setItems:good];
-    } else {
-        [_speechSynthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-        
-        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(speakText:)];
-        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-        pause.style = UIBarButtonItemStylePlain;
-        
-        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-        [temp removeLastObject];
-        [temp addObject:pause];
-        NSArray *good = [temp copy];
-        
-        
-        [_toolbar setItems:good];
     }
     
+    //if it is currently paused, we want to restart playing from where we left out
+    else if (_speechSynthesizer.isPaused) {
+        
+        //continue speaking
+        [_speechSynthesizer continueSpeaking];
+        
+        
+        //turn the icon back into a play button
+        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
+        newButton.style = UIBarButtonItemStylePlain;
+        newButton.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+
+    }
     
+    //else, we are currently playing and need to pause
+    else {
+        
+        //pause immediately
+        [_speechSynthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        
+        //and turn button into a play button
+        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(speakText:)];
+        newButton.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+        newButton.style = UIBarButtonItemStylePlain;
+    }
     
-    
-    
+    //override toolbar icon
+    NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+    [temp removeLastObject];
+    [temp addObject:newButton];
+    NSArray *good = [temp copy];
+    [_toolbar setItems:good];
     
 }
 
+
+#pragma mark - Adjusting Font Size Methods
 - (IBAction)fontSizeIncrease:(UIBarButtonItem *)sender {
+    
+    //get default, increment, and save back
     long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
     offset = offset + 1;
     [[NSUserDefaults standardUserDefaults] setInteger:offset forKey:@"FontSize"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
+    //update text with new size
     [self setText];
 }
 - (IBAction)fontSizeDecrease:(UIBarButtonItem *)sender {
+    
+    //get default, decrement, and save back
     long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
     offset = offset - 1;
     [[NSUserDefaults standardUserDefaults] setInteger:offset forKey:@"FontSize"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    //update text with new size
     [self setText];
 }
 
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

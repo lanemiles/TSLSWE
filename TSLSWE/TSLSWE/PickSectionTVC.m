@@ -20,34 +20,30 @@
 
 @implementation PickSectionTVC
 
+
+#pragma mark - View Controller Life Cycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+
+    //we have a fixed set of sections to pick from
+    //we do this as opposed to static cells for ease of transitioning
     _data = [[NSArray alloc] initWithObjects:@"Top Stories", @"News", @"Sports", @"Life & Style", @"Opinions", @"Features", @"Twitter", @"About", @"Contact",nil];
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-- (IBAction)shouldHideViewController:(UIBarButtonItem *)sender {
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-- (IBAction)didPressFavorites:(id)sender {
-    
-    
-    
 }
 
 - (void) viewWillAppear:(BOOL)animated{
+    
     [super viewWillAppear:YES];
+    
+    //set back button text for section table views
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Menu"
                                                                  style:UIBarButtonItemStylePlain
                                                                 target:nil
                                                                 action:nil];
-    
     [self.navigationItem setBackBarButtonItem:backItem];
     
+    
+    //stlye the navigation controller
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1]];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     [self.navigationController.navigationBar setTitleTextAttributes:
@@ -59,6 +55,7 @@
       NSFontAttributeName,
       nil]];
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -66,83 +63,94 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
-
-
+#pragma mark - Table View Data Source / Delegate Methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
     return _data.count;
 }
 
 
 - (SectionCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    //get the section cell
     SectionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PickSectionCell" forIndexPath:indexPath];
     
-    // Configure the cell...
+    //Set up cell display based on row and text from array of options
     cell.name.text = _data[indexPath.row];
-//    if ([_data[indexPath.row] isEqualToString:@"News"]) {
-//         cell.image = [UIImage imageNamed:@"News"];
-//    }
     cell.image.image= [UIImage imageNamed:_data[indexPath.row]];
     return cell;
 }
 
+//We have different segues based on which option you want
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    //if you pick a normal TSL section
     if (indexPath.row < 6) {
         [self performSegueWithIdentifier:@"ShowSection" sender:indexPath];
-    } else if (indexPath.row == 6){
-        [self performSegueWithIdentifier:@"TWITTER" sender:indexPath];
-    } else if (indexPath.row > 6){
-        [self performSegueWithIdentifier:@"ReadOther" sender:indexPath];
+    }
+    
+    //if you pick Twitter
+    else if (indexPath.row == 6){
+        [self performSegueWithIdentifier:@"ShowTwitter" sender:indexPath];
+    }
+    
+    //if you pick About or Contact
+    else if (indexPath.row > 6){
+        [self performSegueWithIdentifier:@"ShowOther" sender:indexPath];
     }
 }
 
 #pragma mark - Navigation
 
+//if they want to hide the menu with the upper left X
+- (IBAction)shouldHideViewController:(UIBarButtonItem *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+
+    //if we are segueing from a table cell
     if ([sender isKindOfClass:[NSIndexPath class]]) {
         NSIndexPath *path = (NSIndexPath*) sender;
         NSString *sectionName = _data[path.row];
-        NSLog(@"%ld", (long)path.row);
+
+        //if going to a section, set section name
         if (path.row < 6) {
             UINavigationController *nav = segue.destinationViewController;
-            
             if ([nav.topViewController isKindOfClass:[ReadSectionTVC class]]) {
                 ReadSectionTVC *vc = (ReadSectionTVC *)nav.topViewController;
                 vc.sectionName = sectionName;
                 vc.title = sectionName;
             }
-        } else if (path.row  == 7) {
+        }
+        
+        //if going to About
+        else if (path.row  == 7) {
             ReadOtherVC *vc = (ReadOtherVC*)segue.destinationViewController;
             vc.otherName = @"About";
-        } else if (path.row == 8) {
+        }
+        
+        //if going to Contact
+        else if (path.row == 8) {
             ReadOtherVC *vc = (ReadOtherVC*)segue.destinationViewController;
             vc.otherName = @"Contact";
         }
         
-        
-        
+        //we don't do any setup to show the Twitter
     }
     
-    
+    //if we pressed the favorites icon
+    //set the sectionName property correctly
     else {
-    
-     
+
         NSString *sectionName = @"Favorites";
-        
         UINavigationController *nav = segue.destinationViewController;
-        
         if ([nav.topViewController isKindOfClass:[ReadSectionTVC class]]) {
             ReadSectionTVC *vc = (ReadSectionTVC *)nav.topViewController;
             vc.sectionName = sectionName;
             vc.title = sectionName;
         }
     }
-    
     
 }
 

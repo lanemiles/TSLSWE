@@ -10,181 +10,75 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface ReadArticleVC ()
+
+//the text view which holds all displaying text
 @property (strong, nonatomic) IBOutlet UITextView *textView;
+
+//properties of the article that go in the textview
 @property (strong, nonatomic) NSString *articleTitle;
 @property (strong, nonatomic) NSString *sectionName;
 @property (strong, nonatomic) NSString *authorNames;
 @property (strong, nonatomic) NSString *articleBody;
 @property (strong, nonatomic) NSString *articleDate;
 @property (strong, nonatomic) NSString *articleURL;
+
+//if they have favorited
 @property bool hasFavorited;
 
+//share screen
 @property (strong, nonatomic) UIActivityViewController *activityViewController;
+
+//toolbar
 @property (strong, nonatomic) IBOutlet UIToolbar *toolbar;
 
+//speech synth for reading
 @property (strong, nonatomic) AVSpeechSynthesizer *speechSynthesizer;
+
+//spinner for loading
+@property (strong, nonatomic) UIActivityIndicatorView *spinner;
+
 @end
 
 @implementation ReadArticleVC
-- (IBAction)didPressShare:(UIBarButtonItem *)sender {
-    
-    NSString *str = @"I just read this great article in the TSL and thought you might like it too! \n";
-    NSURL *url = [NSURL URLWithString:_articleURL];
-    
-    
-    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[str, url] applicationActivities:nil];
-    
-    [self presentViewController:self.activityViewController animated:YES completion:nil];
-}
-- (IBAction)didFavoriteArticle:(id)sender {
-    
-    UIBarButtonItem *send = (UIBarButtonItem*) sender;
-    
-    if (_hasFavorited) {
-        
-        NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
-        NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/removeFavorite/%@/%@", uuid, _articleId];
-        NSURL *url = [NSURL URLWithString:urlStr];
-        
-        
-        dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
-        dispatch_async(concurrentQueue, ^{
-            
-            NSError *err;
-            NSString *data = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
-                pause.style = UIBarButtonItemStylePlain;
-                pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-                NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-                
-                temp[0] = pause;
-                NSArray *good = [temp copy];
-                
-                
-                
-                [_toolbar setItems:good];
-                _hasFavorited = false;
-                
-            });
-            
-            
-        });
-        
-    } else {
-        
-        NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
-        NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/addFavorite/%@/%@", uuid, _articleId];
-        NSURL *url = [NSURL URLWithString:urlStr];
-        
-        
-        dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
-        dispatch_async(concurrentQueue, ^{
-            
-            NSError *err;
-            NSString *data = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"starfilled"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
-                pause.style = UIBarButtonItemStylePlain;
-                pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-                NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-                
-                temp[0] = pause;
-                NSArray *good = [temp copy];
-                
-                
-                [_toolbar setItems:good];
-                
-            });
-            
-            
-        });
-        
-    }
-    
-   
 
+#pragma mark - View Controller Life Cycle Methods
+- (void)viewDidLoad {
+    
+    [super viewDidLoad];
+    
+    //set up the spinner
+    _spinner = [[UIActivityIndicatorView alloc]
+                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    _spinner.backgroundColor = [UIColor whiteColor];
+    _spinner.color = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+    
+    
+    //set up the speech synth
+    _speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
     
 }
+
 
 - (void) viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:YES];
+    
+    //start the spinner
+    _spinner.center=self.view.center;
+    [self.view addSubview:_spinner];
+    [_spinner startAnimating];
+    
+    //start the async data grab
+    [self getArticleDataWithIDNumber: _articleId];
+    
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
+    
     [super viewWillDisappear:YES];
+    
+    //if speaking, stop
     [_speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-        [self getArticleDataWithIDNumber: _articleId];
-    long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
-
-    
-    
-    _speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
-
-}
-
-- (IBAction)speakText:(UIBarButtonItem *)sender {
-    NSString *string = _textView.text;
-    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:string];
-    utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
-    
-    utterance.rate = .20;
-
-    
-    if (!_speechSynthesizer.isPaused && !_speechSynthesizer.isSpeaking) {
-        [_speechSynthesizer speakUtterance:utterance];
-        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
-        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-        pause.style = UIBarButtonItemStylePlain;
-        
-        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-        [temp removeLastObject];
-        [temp addObject:pause];
-        NSArray *good = [temp copy];
-        [_toolbar setItems:good];
-    } else if (_speechSynthesizer.isPaused) {
-        [_speechSynthesizer continueSpeaking];
-        
-        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
-        pause.style = UIBarButtonItemStylePlain;
-        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-        
-        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-        [temp removeLastObject];
-        [temp addObject:pause];
-        NSArray *good = [temp copy];
-        
-        
-        [_toolbar setItems:good];
-    } else {
-        [_speechSynthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
-        
-        UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(speakText:)];
-        pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-        pause.style = UIBarButtonItemStylePlain;
-        
-        NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-        [temp removeLastObject];
-        [temp addObject:pause];
-        NSArray *good = [temp copy];
-        
-        
-        [_toolbar setItems:good];
-    }
-    
-    
-
-    
-    
     
 }
 
@@ -194,93 +88,276 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void) getArticleDataWithIDNumber: (NSString*) articleId {
-        dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
-        dispatch_async(concurrentQueue, ^{
-            NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
-            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/articles/%@/%@", uuid, articleId]];
-            NSError *err;
-            NSString *test = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
+#pragma mark - Share Methods
+- (IBAction)didPressShare:(UIBarButtonItem *)sender {
+    
+    //set the string to be displayed with URL
+    NSString *str = @"I just read this great article in the TSL and thought you might like it too!\n";
+    
+    //set the URL on the TSL's real website
+    NSURL *url = [NSURL URLWithString:_articleURL];
+    
+    //create and show the share screen
+    self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[str, url] applicationActivities:nil];
+    [self presentViewController:self.activityViewController animated:YES completion:nil];
+    
+}
 
-            NSData *jsonData = [test dataUsingEncoding:NSUTF8StringEncoding];
+#pragma mark - Favorite Methods
+- (IBAction)didFavoriteArticle:(id)sender {
+    
+    //will need this for the URLs
+    NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+    
+    //if they have favorited, we want to unfavorite, and change icon to not filled
+    if (_hasFavorited) {
         
-     
+        //create our URL for removing the favorite
+        NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/removeFavorite/%@/%@", uuid, _articleId];
+        NSURL *url = [NSURL URLWithString:urlStr];
+        
+        //want to do this in the background, so create the queue
+        dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
+        
+        //get the queue
+        dispatch_async(concurrentQueue, ^{
             
-            if(jsonData != nil) {
-                NSError *error = nil;
-                NSDictionary *result = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
-                
-               
-                
-                NSDictionary *temp = [result valueForKey:@"fields"];
-                _articleTitle = [temp valueForKey:@"headline"];
-                _sectionName = [temp valueForKey:@"section"];
-                
-                
-                NSArray *authors = [temp valueForKey:@"authors"];
-                NSString *by = @"By ";
-                for (int i = 0; i < authors.count; i++) {
-                    if (i != authors.count - 1) {
-                        by = [by stringByAppendingString:[NSString stringWithFormat:@"%@ and ", authors[i]]];
-                    } else {
-                        by = [by stringByAppendingString:[NSString stringWithFormat:@"%@", authors[i]]];
-                    }
-                }
-                
-                _authorNames = by;
-                _articleDate = [temp valueForKey:@"pub_date"];
-                _articleBody = [temp valueForKey:@"article_body"];
-                _articleURL = [temp valueForKey:@"url"];
-                
-                
-                NSString *favorited = [temp valueForKey:@"favorited"];
-                if ([favorited isEqualToString:@"false"]) {
-                    _hasFavorited = false;
-                } else {
-                    _hasFavorited = true;
-                }
-
-                
-                if (error == nil) {
-                    
-                }
-                
-            }
+            //go do the GET request
+            NSError *err;
+            [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
             
+            //get the main queue for UI updating
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self setText];
-                if (_hasFavorited) {
-                    UIBarButtonItem *pause = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"starfilled"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
-                    pause.style = UIBarButtonItemStylePlain;
-                    pause.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
-                    NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
-                    
-                    temp[0] = pause;
-                    NSArray *good = [temp copy];
-                    
-                    
-                    [_toolbar setItems:good];
-                }
+                
+                //update the star to be empty
+                UIBarButtonItem *notFilledIcon = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"star"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
+                notFilledIcon.style = UIBarButtonItemStylePlain;
+                notFilledIcon.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+                
+                //override toolbar items
+                NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+                temp[0] = notFilledIcon;
+                NSArray *good = [temp copy];
+                [_toolbar setItems:good];
+                
+                //set has favorited to be false
+                _hasFavorited = false;
+                
             });
             
             
         });
+        
+    }
+    
+    //if they have not favorited, we want to favorite the article
+    else {
+        
+        //create our URL for adding the favorite
+        NSString *urlStr = [NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/addFavorite/%@/%@", uuid, _articleId];
+        NSURL *url = [NSURL URLWithString:urlStr];
+        
+        //want to do this in the background
+        dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
+        
+        //get the queue
+        dispatch_async(concurrentQueue, ^{
+            
+            //do the GET request
+            NSError *err;
+            [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
+            
+            //get the main queue for UI updating
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                //set favorite icon to be filled
+                UIBarButtonItem *filledIcon = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"starfilled"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
+                filledIcon.style = UIBarButtonItemStylePlain;
+                filledIcon.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+                
+                //override toolbar items
+                NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+                temp[0] = filledIcon;
+                NSArray *good = [temp copy];
+                [_toolbar setItems:good];
+                
+                //set favorited to be true
+                _hasFavorited = true;
+                
+            });
+            
+            
+        });
+        
+    }
+    
 }
 
 
+#pragma mark - Speak Text Methods
+- (IBAction)speakText:(UIBarButtonItem *)sender {
+    
+    //set the text to be the article and metadata
+    NSString *string = _textView.text;
+    
+    //create the utterance
+    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:string];
+    utterance.voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
+    utterance.rate = .20;
+    
+    //will need this to update the button
+    UIBarButtonItem *newButton;
+    
+    //if we haven't started playing at all yet
+    if (!_speechSynthesizer.isPaused && !_speechSynthesizer.isSpeaking) {
+        
+        //start reading
+        [_speechSynthesizer speakUtterance:utterance];
+        
+        //make the button a pause icon
+        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
+        newButton.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+        newButton.style = UIBarButtonItemStylePlain;
+        
+    }
+    
+    //if it is currently paused, we want to restart playing from where we left out
+    else if (_speechSynthesizer.isPaused) {
+        
+        //continue speaking
+        [_speechSynthesizer continueSpeaking];
+        
+        
+        //turn the icon back into a play button
+        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPause target:self action:@selector(speakText:)];
+        newButton.style = UIBarButtonItemStylePlain;
+        newButton.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+        
+    }
+    
+    //else, we are currently playing and need to pause
+    else {
+        
+        //pause immediately
+        [_speechSynthesizer pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+        
+        //and turn button into a play button
+        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(speakText:)];
+        newButton.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+        newButton.style = UIBarButtonItemStylePlain;
+    }
+    
+    //override toolbar icon
+    NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+    [temp removeLastObject];
+    [temp addObject:newButton];
+    NSArray *good = [temp copy];
+    [_toolbar setItems:good];
+    
+}
+
+#pragma mark - Get Article Data
+- (void) getArticleDataWithIDNumber: (NSString*) articleId {
+    
+    //we want to do this in a non-blocking thread
+    dispatch_queue_t concurrentQueue = dispatch_queue_create("JSONQueue", NULL);
+    
+    //get the thread
+    dispatch_async(concurrentQueue, ^{
+        
+        //get the URL for the article given our device
+        //need our device to know if we have favorited it or not
+        NSString *uuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://tslswe.pythonanywhere.com/articles/%@/%@", uuid, articleId]];
+        
+        //get the JSON
+        NSError *err;
+        NSString *test = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&err];
+        
+        //convert to NSData
+        NSData *jsonData = [test dataUsingEncoding:NSUTF8StringEncoding];
+        
+        //if we have data
+        if(jsonData != nil) {
+            
+            //unserialize the data
+            NSError *error = nil;
+            NSDictionary *result = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
+            
+            //parse the JSON and set ivars
+            NSDictionary *temp = [result valueForKey:@"fields"];
+            _articleTitle = [temp valueForKey:@"headline"];
+            _sectionName = [temp valueForKey:@"section"];
+            
+            //turn author list into a string
+            NSArray *authors = [temp valueForKey:@"authors"];
+            NSString *by = @"By ";
+            for (int i = 0; i < authors.count; i++) {
+                if (i != authors.count - 1) {
+                    by = [by stringByAppendingString:[NSString stringWithFormat:@"%@ and ", authors[i]]];
+                } else {
+                    by = [by stringByAppendingString:[NSString stringWithFormat:@"%@", authors[i]]];
+                }
+            }
+            
+            _authorNames = by;
+            
+            //get the rest of the data
+            _articleDate = [temp valueForKey:@"pub_date"];
+            _articleBody = [temp valueForKey:@"article_body"];
+            _articleURL = [temp valueForKey:@"url"];
+            
+            //determine if has favorited
+            NSString *favorited = [temp valueForKey:@"favorited"];
+            if ([favorited isEqualToString:@"false"]) {
+                _hasFavorited = false;
+            } else {
+                _hasFavorited = true;
+            }
+            
+        }
+        
+        //get the main thread to do UI updating
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            //set the text given what we parsed
+            [self setText];
+            
+            //if we have favorited the article, set to be filled
+            if (_hasFavorited) {
+                UIBarButtonItem *filledIcon = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"starfilled"] style:UIBarButtonItemStylePlain target:self action:@selector(didFavoriteArticle:)];
+                filledIcon.style = UIBarButtonItemStylePlain;
+                filledIcon.tintColor = [UIColor colorWithRed:.054 green:.478 blue:.733 alpha:1];
+                
+                //override the toolbar items
+                NSMutableArray *temp = [NSMutableArray arrayWithArray:_toolbar.items];
+                temp[0] = filledIcon;
+                NSArray *good = [temp copy];
+                [_toolbar setItems:good];
+                
+            }
+            
+            //and stop spinning
+            [_spinner stopAnimating];
+            
+        });
+        
+    });
+}
+
+
+#pragma mark - Set Text Methods
 - (void) setText {
     
+    //get the user font size preference
     long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
-
     
- 
+    //our uitextview is really just showing 5 strings concatenated with a bunch of newlines added
     NSString *text = [NSString stringWithFormat:@"%@\n\n%@\n%@\n%@\n\n%@",
                       _articleTitle, [_sectionName uppercaseString], _articleDate, _authorNames, _articleBody];
     
-    // If attributed text is supported (iOS6+)
-    
-    // Define general attributes for the entire text
-    
+ 
+    //create the attributed string
     NSMutableAttributedString *attributedText =
     [[NSMutableAttributedString alloc] initWithString:text];
     
@@ -316,36 +393,33 @@
                             range:bodyRange];
     
     
+    //set the textview text to our new attributed string
     self.textView.attributedText = attributedText;
     
-    
-
 }
+
+#pragma mark - Adjusting Font Size Methods
 - (IBAction)fontSizeIncrease:(UIBarButtonItem *)sender {
+    
+    //get default, increment, and save back
     long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
     offset = offset + 1;
     [[NSUserDefaults standardUserDefaults] setInteger:offset forKey:@"FontSize"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
+    //update text with new size
     [self setText];
 }
 - (IBAction)fontSizeDecrease:(UIBarButtonItem *)sender {
+    
+    //get default, decrement, and save back
     long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
     offset = offset - 1;
     [[NSUserDefaults standardUserDefaults] setInteger:offset forKey:@"FontSize"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    //update text with new size
     [self setText];
 }
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

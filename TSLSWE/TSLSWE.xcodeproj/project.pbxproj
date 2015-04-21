@@ -20,7 +20,6 @@
 		1D727CD01ACDE2BF00703A14 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D727CCF1ACDE2BF00703A14 /* Images.xcassets */; };
 		1D727CD31ACDE2BF00703A14 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1D727CD11ACDE2BF00703A14 /* LaunchScreen.xib */; };
 		1D727CDF1ACDE2BF00703A14 /* TSLSWETests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D727CDE1ACDE2BF00703A14 /* TSLSWETests.m */; };
-		1D9AB78C1ADE58FE007DA2A2 /* FeaturedArticlesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D9AB78B1ADE58FE007DA2A2 /* FeaturedArticlesTVC.m */; };
 		1DE7209B1ADEFEF40061A674 /* ReadArticleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DE7209A1ADEFEF40061A674 /* ReadArticleVC.m */; };
 /* End PBXBuildFile section */
 
@@ -60,8 +59,6 @@
 		1D727CD81ACDE2BF00703A14 /* TSLSWETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TSLSWETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D727CDD1ACDE2BF00703A14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1D727CDE1ACDE2BF00703A14 /* TSLSWETests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TSLSWETests.m; sourceTree = "<group>"; };
-		1D9AB78A1ADE58FE007DA2A2 /* FeaturedArticlesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeaturedArticlesTVC.h; path = ../FeaturedArticlesTVC.h; sourceTree = "<group>"; };
-		1D9AB78B1ADE58FE007DA2A2 /* FeaturedArticlesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FeaturedArticlesTVC.m; path = ../FeaturedArticlesTVC.m; sourceTree = "<group>"; };
 		1DE720991ADEFEF40061A674 /* ReadArticleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadArticleVC.h; sourceTree = "<group>"; };
 		1DE7209A1ADEFEF40061A674 /* ReadArticleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadArticleVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -124,8 +121,6 @@
 				1D1024071AE0D7620025351A /* PickSectionTVC.m */,
 				1DE720991ADEFEF40061A674 /* ReadArticleVC.h */,
 				1DE7209A1ADEFEF40061A674 /* ReadArticleVC.m */,
-				1D9AB78A1ADE58FE007DA2A2 /* FeaturedArticlesTVC.h */,
-				1D9AB78B1ADE58FE007DA2A2 /* FeaturedArticlesTVC.m */,
 				1D727CCF1ACDE2BF00703A14 /* Images.xcassets */,
 				1D727CD11ACDE2BF00703A14 /* LaunchScreen.xib */,
 				1D727CC21ACDE2BF00703A14 /* Supporting Files */,
@@ -260,7 +255,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D9AB78C1ADE58FE007DA2A2 /* FeaturedArticlesTVC.m in Sources */,
 				1D09E0CE1AE4785A0023BB1B /* ArticleInfoCell.m in Sources */,
 				1D1B21C91AE5AB0B0056135D /* ReadOtherVC.m in Sources */,
 				1D727CC81ACDE2BF00703A14 /* AppDelegate.m in Sources */,
@@ -383,6 +377,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -394,7 +389,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lane Miles (4N48UBB95Z)";
 				INFOPLIST_FILE = TSLSWE/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -407,7 +402,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Lane Miles (4N48UBB95Z)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Lane Miles (4N48UBB95Z)";
 				INFOPLIST_FILE = TSLSWE/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

@@ -10,7 +10,10 @@
 
 @interface ArticleInfoCell : UITableViewCell
 
+//article title
 @property (strong, nonatomic) IBOutlet UILabel *articleTitle;
+
+// section | authors | date
 @property (strong, nonatomic) IBOutlet UILabel *byLine;
 
 @end

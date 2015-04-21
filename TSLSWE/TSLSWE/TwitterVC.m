@@ -16,12 +16,19 @@
 
 @implementation TwitterVC
 
+
+#pragma mark - View Controller Life Cycle Methods
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    //get the TSL's twitter URL
     NSURL *url = [NSURL URLWithString:@"https://twitter.com/tslnews"];
+    
+    //load it into the webView
     NSURLRequest *requestObj = [NSURLRequest requestWithURL:url];
     [_webView loadRequest:requestObj];
+    
+    //create the spinner
     _spinner = [[UIActivityIndicatorView alloc]
                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     _spinner.backgroundColor = [UIColor whiteColor];
@@ -30,29 +37,27 @@
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:YES];
+    
+    //start the spinner
     _spinner.center=self.view.center;
     [_spinner startAnimating];
     [self.view addSubview:_spinner];
+    
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [_spinner stopAnimating];
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+#pragma mark - WebView Delegate Methods
+//when the website loads, stop the spinner
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [_spinner stopAnimating];
 }
-*/
 
 @end
