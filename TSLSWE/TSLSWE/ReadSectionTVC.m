@@ -29,7 +29,7 @@
     _data = [[NSArray alloc] init];
     
     //set up variable height cells
-    self.tableView.estimatedRowHeight = 400.0;
+    self.tableView.estimatedRowHeight = 250.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
     //set up spinner
