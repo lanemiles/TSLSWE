@@ -5,7 +5,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--TSL Twitter-->
+        <!--Twitter-->
         <scene sceneID="tV4-t5-v7j">
             <objects>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" id="QqE-p2-25X" customClass="TwitterVC" sceneMemberID="viewController">
@@ -33,7 +33,7 @@
                             <constraint firstItem="Mlp-UU-mub" firstAttribute="top" secondItem="kbN-kx-C1M" secondAttribute="bottom" id="uxq-oo-5yX"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="TSL Twitter" id="7W7-QO-1Hb"/>
+                    <navigationItem key="navigationItem" title="Twitter" id="7W7-QO-1Hb"/>
                     <connections>
                         <outlet property="webView" destination="kbN-kx-C1M" id="RAt-fE-N4R"/>
                     </connections>
