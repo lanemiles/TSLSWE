@@ -78,6 +78,13 @@
     //Set up cell display based on row and text from array of options
     cell.name.text = _data[indexPath.row];
     cell.image.image= [UIImage imageNamed:_data[indexPath.row]];
+    
+    //set the cell font size
+    long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
+    
+    UIFont *nameSize = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18+offset];
+    cell.name.font = nameSize;
+    
     return cell;
 }
 

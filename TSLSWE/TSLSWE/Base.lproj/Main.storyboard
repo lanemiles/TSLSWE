@@ -459,8 +459,8 @@
         <image name="uparrow" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="h1j-bG-wno"/>
+        <segue reference="lSs-Xf-VSW"/>
         <segue reference="ngX-Nh-oPh"/>
-        <segue reference="yjA-31-tTU"/>
-        <segue reference="OLN-Hc-xpI"/>
     </inferredMetricsTieBreakers>
 </document>

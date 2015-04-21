@@ -198,6 +198,17 @@
     //set up the cell
     cell.articleTitle.text = title;
     cell.byLine.text = byLine;
+    
+    //set the cell font size
+    long offset = [[NSUserDefaults standardUserDefaults] integerForKey:@"FontSize"];
+    
+    UIFont *titleSize = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16+offset];
+    cell.articleTitle.font = titleSize;
+    
+    UIFont *bySize = [UIFont fontWithName:@"HelveticaNeue-Light" size:13+offset];
+    cell.byLine.font = bySize;
+    
+    
     return cell;
     
 }
